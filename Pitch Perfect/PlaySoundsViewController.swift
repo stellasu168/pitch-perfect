@@ -27,10 +27,10 @@ class PlaySoundsViewController: UIViewController {
         // Do any additional setup after loading the view.
 
         // Initialization
-        audioPlayer = AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl, error: nil)
+        audioPlayer = try? AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl)
         audioPlayer.enableRate = true
         audioEngine = AVAudioEngine()
-        audioFile = AVAudioFile(forReading: receivedAudio.filePathUrl, error: nil)
+        audioFile = try? AVAudioFile(forReading: receivedAudio.filePathUrl)
 
     }
 
@@ -97,8 +97,11 @@ class PlaySoundsViewController: UIViewController {
         
         audioPlayerNode.scheduleFile(audioFile, atTime: nil, completionHandler: nil)
         
-        // Start the Audio Engine
-        audioEngine.startAndReturnError(nil)
+        do {
+            // Start the Audio Engine
+            try audioEngine.startAndReturnError()
+        } catch _ {
+        }
         audioPlayerNode.play()
         
     }
